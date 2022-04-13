@@ -1,0 +1,5 @@
+set -e
+projectRoot="$(a="/$0"; a=${a%/*}; a=${a:-.}; a=${a#/}/; cd "$a/.." || return; pwd)"
+
+docker-compose up -d &&
+  func start -p 7082
