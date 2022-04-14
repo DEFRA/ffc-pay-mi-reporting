@@ -26,11 +26,10 @@ const initialiseTable = async () => {
 const queryEntitiesByTimestamp = async () => {
   const events = []
   tableInitialised ?? await initialiseTable()
-  const eventResults = tableClient.listEntities({ queryOptions: { filter: odata`Timestamp ge datetime'${new Date(2022, 3, 13).toISOString()}'` } })
+  const eventResults = tableClient.listEntities({ queryOptions: { filter: odata`Timestamp ge datetime'${new Date(2022, 1, 1).toISOString()}'` } })
   for await (const event of eventResults) {
     events.push(event)
   }
-
   return events
 }
 

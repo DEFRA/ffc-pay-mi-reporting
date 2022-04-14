@@ -18,7 +18,7 @@ const getEvent = (data) => {
   const eventData = data.find(x => x.EventType === 'batch-processing')
   const event = eventData ? JSON.parse(eventData.Payload) : {}
   const paymentData = event?.data?.paymentRequest
-  return { id: eventData.partitionKey, sequence: event.data.sequence, paymentData }
+  return { id: eventData?.partitionKey, sequence: event?.data?.sequence, paymentData }
 }
 
 const getLatestEvent = (data) => {
@@ -29,6 +29,11 @@ const getLatestEvent = (data) => {
 
 const parseEventData = (eventData) => {
   const { id, sequence, paymentData } = getEvent(eventData)
+
+  if (!paymentData) {
+    return {}
+  }
+
   const { status, eventRaised } = getLatestEvent(eventData)
 
   return {
@@ -54,7 +59,11 @@ const buildMiReport = (events) => {
 
   for (const eventGroup in eventByCorrelation) {
     const eventData = eventByCorrelation[eventGroup]
-    miParsedData.push(parseEventData(eventData))
+    const parseData = parseEventData(eventData)
+
+    if (Object.keys(parseData).length > 0) {
+      miParsedData.push(parseData)
+    }
   }
 
   return convertToCSV(miParsedData)
