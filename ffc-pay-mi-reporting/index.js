@@ -1,14 +1,21 @@
-const { queryEntitiesByTimestamp } = require('./storage')
+const { queryEntitiesByTimestamp, writeFile, connect } = require('./storage')
 const buildMiReport = require('./mi-report')
+const { reportName } = require('./config')
 
 module.exports = async (context, miReportTimer) => {
+  await connect()
   const timeStamp = new Date().toISOString()
+  context.log('Sourcing report data')
   const events = await queryEntitiesByTimestamp()
-  console.log(buildMiReport(events))
-
-  if (miReportTimer.isPastDue) {
-    context.log('Node is running late!')
+  if (events.length) {
+    context.log('Report creation started')
+    const csvData = buildMiReport(events)
+    await writeFile(reportName, csvData)
+    context.log('Report created')
   }
 
-  context.log('Node timer trigger function ran!', timeStamp)
+  if (miReportTimer.isPastDue) {
+    context.log('Node is running late')
+  }
+  context.log('Node timer trigger function ran', timeStamp)
 }

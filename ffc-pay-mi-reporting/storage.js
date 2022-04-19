@@ -1,31 +1,18 @@
-const { DefaultAzureCredential } = require('@azure/identity')
 const { TableClient, odata } = require('@azure/data-tables')
-
+const { BlobServiceClient } = require('@azure/storage-blob')
+const { connectionString, containerName, tableName } = require('./config')
 let tableClient
-let tableInitialised
-const tableName = process.env.AZURE_STORAGE_TABLE
+let blobServiceClient
+let container
 
-if (process.env.AZURE_STORAGE_USE_CONNECTION_STRING) {
-  console.log('Using connection string for TableClient')
-  tableClient = TableClient.fromConnectionString(process.env.TableConnectionString, tableName, { allowInsecureConnection: true })
-} else {
-  console.log('Using DefaultAzureCredential for BlobServiceClient')
-  tableClient = new TableClient(
-    `https://${process.env.AZURE_STORAGE_ACCOUNT_NAME}.table.core.windows.net`,
-    tableName,
-    new DefaultAzureCredential()
-  )
-}
-
-const initialiseTable = async () => {
-  console.log('Making sure table exist')
-  await tableClient.createTable(tableName)
-  tableInitialised = true
+const connect = () => {
+  blobServiceClient = BlobServiceClient.fromConnectionString(connectionString)
+  container = blobServiceClient.getContainerClient(containerName)
+  tableClient = TableClient.fromConnectionString(connectionString, tableName, { allowInsecureConnection: true })
 }
 
 const queryEntitiesByTimestamp = async () => {
   const events = []
-  tableInitialised ?? await initialiseTable()
   const eventResults = tableClient.listEntities({ queryOptions: { filter: odata`Timestamp ge datetime'${new Date(2022, 1, 1).toISOString()}'` } })
   for await (const event of eventResults) {
     events.push(event)
@@ -33,7 +20,13 @@ const queryEntitiesByTimestamp = async () => {
   return events
 }
 
+const writeFile = async (filename, content) => {
+  const blob = container.getBlockBlobClient(filename)
+  await blob.upload(content, content.length)
+}
+
 module.exports = {
+  connect,
   queryEntitiesByTimestamp,
-  tableClient
+  writeFile
 }

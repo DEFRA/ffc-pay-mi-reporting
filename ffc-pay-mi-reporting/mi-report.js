@@ -1,3 +1,6 @@
+const BATCH_PROCESSED_EVENT_TYPE = 'batch-processing'
+const PAYMENT_REQUEST_ENRICHMENT_EVENT_TYPE = 'payment-request-enrichment'
+
 const groupByPartitionKey = (events) => {
   return events.reduce((group, event) => {
     const { partitionKey } = event
@@ -14,11 +17,15 @@ const convertToCSV = (data) => {
   return `"${csv.join('"\n"').replace(/,/g, '","')}"`
 }
 
-const getEvent = (data) => {
-  const eventData = data.find(x => x.EventType === 'batch-processing')
+const getFirstEvent = (data) => {
+  const eventData = getEvent(data, BATCH_PROCESSED_EVENT_TYPE) ?? getEvent(data, PAYMENT_REQUEST_ENRICHMENT_EVENT_TYPE)
   const event = eventData ? JSON.parse(eventData.Payload) : {}
-  const paymentData = event?.data?.paymentRequest
-  return { id: eventData?.partitionKey, sequence: event?.data?.sequence, paymentData }
+  const paymentData = event.data?.paymentRequest
+  return { id: eventData?.partitionKey, sequence: event.data?.sequence, paymentData }
+}
+
+const getEvent = (data, eventType) => {
+  return data.find(x => x.EventType === eventType)
 }
 
 const getLatestEvent = (data) => {
@@ -28,7 +35,7 @@ const getLatestEvent = (data) => {
 }
 
 const parseEventData = (eventData) => {
-  const { id, sequence, paymentData } = getEvent(eventData)
+  const { id, sequence, paymentData } = getFirstEvent(eventData)
 
   if (!paymentData) {
     return {}
@@ -43,7 +50,7 @@ const parseEventData = (eventData) => {
     agreementNumber: paymentData.agreementNumber,
     schemeYear: paymentData.marketingYear,
     invoiceNumber: paymentData.invoiceNumber,
-    preferedPaymentCurrency: paymentData.currency,
+    preferredPaymentCurrency: paymentData.currency,
     paymentInvoiceNumber: paymentData.paymentRequestNumber,
     totalAmount: paymentData.value,
     batchId: sequence,
