@@ -3,7 +3,7 @@ const buildMiReport = require('./mi-report')
 const { reportName } = require('./config')
 
 module.exports = async (context, miReportTimer) => {
-  await connect()
+  connect()
   const timeStamp = new Date().toISOString()
   context.log('Sourcing report data')
   const events = await queryEntitiesByTimestamp()
