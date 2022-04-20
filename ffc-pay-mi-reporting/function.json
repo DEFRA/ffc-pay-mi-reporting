@@ -1,0 +1,10 @@
+{
+  "bindings": [
+    {
+      "schedule": "0 45 14,15 * * *",
+      "name": "miReportTimer",
+      "type": "timerTrigger",
+      "direction": "in"
+    }
+  ]
+}
