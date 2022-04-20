@@ -4,7 +4,8 @@
   "description": "Azure Function to create MI reports",
   "author": "Defra",
   "contributors": [
-    "Steve Dickinson <steve.dickinson@defra.gov.uk>"
+    "Steve Dickinson <steve.dickinson@defra.gov.uk>",
+    "John Watson <john.watson2@rpa.gov.uk>"
   ],
   "scripts": {
     "lint": "standard",
@@ -14,7 +15,6 @@
   },
   "dependencies": {
     "@azure/data-tables": "^13.0.1",
-    "@azure/identity": "^2.0.2",
     "@azure/storage-blob": "^12.9.0",
     "joi": "^17.4.1"
   },

@@ -63,7 +63,6 @@ const parseEventData = (eventData) => {
 const buildMiReport = (events) => {
   const eventByCorrelation = groupByPartitionKey(events)
   const miParsedData = []
-
   for (const eventGroup in eventByCorrelation) {
     const eventData = eventByCorrelation[eventGroup]
     const parseData = parseEventData(eventData)
