@@ -1,11 +1,12 @@
 {
   "name": "ffc-pay-mi-reporting",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Azure Function to create MI reports",
   "author": "Defra",
   "contributors": [
     "Steve Dickinson <steve.dickinson@defra.gov.uk>",
-    "John Watson <john.watson2@rpa.gov.uk>"
+    "John Watson <john.watson2@rpa.gov.uk>",
+    "Marc Templeton <m.templeton@kainos.com>"
   ],
   "scripts": {
     "lint": "standard",
