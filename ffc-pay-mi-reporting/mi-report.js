@@ -60,7 +60,7 @@ const parseEventData = (eventData) => {
     totalAmount: paymentData.value,
     batchId: sequence,
     batchCreatorId: paymentData.sourceSystem,
-    exportDate: batchExportDate,
+    batchExportDate,
     status: status,
     lastUpdated: eventRaised
   }
