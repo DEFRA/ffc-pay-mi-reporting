@@ -21,7 +21,12 @@ const getFirstEvent = (data) => {
   const eventData = getEvent(data, BATCH_PROCESSED_EVENT_TYPE) ?? getEvent(data, PAYMENT_REQUEST_ENRICHMENT_EVENT_TYPE)
   const event = eventData ? JSON.parse(eventData.Payload) : {}
   const paymentData = event.data?.paymentRequest
-  return { id: eventData?.partitionKey, sequence: event.data?.sequence, paymentData }
+  return {
+    id: eventData?.partitionKey,
+    sequence: event.data?.sequence,
+    batchExportDate: event.data?.batchExportDate,
+    paymentData
+  }
 }
 
 const getEvent = (data, eventType) => {
@@ -35,7 +40,7 @@ const getLatestEvent = (data) => {
 }
 
 const parseEventData = (eventData) => {
-  const { id, sequence, paymentData } = getFirstEvent(eventData)
+  const { id, sequence, paymentData, batchExportDate } = getFirstEvent(eventData)
 
   if (!paymentData) {
     return {}
@@ -55,6 +60,7 @@ const parseEventData = (eventData) => {
     totalAmount: paymentData.value,
     batchId: sequence,
     batchCreatorId: paymentData.sourceSystem,
+    exportDate: batchExportDate,
     status: status,
     lastUpdated: eventRaised
   }
