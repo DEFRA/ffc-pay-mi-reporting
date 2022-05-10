@@ -1,3 +1,4 @@
+const moment = require('moment')
 const BATCH_PROCESSED_EVENT_TYPE = 'batch-processing'
 const PAYMENT_REQUEST_ENRICHMENT_EVENT_TYPE = 'payment-request-enrichment'
 
@@ -60,9 +61,9 @@ const parseEventData = (eventData) => {
     totalAmount: paymentData.value,
     batchId: sequence,
     batchCreatorId: paymentData.sourceSystem,
-    batchExportDate,
+    batchExportDate: formatDate(batchExportDate),
     status: status,
-    lastUpdated: eventRaised
+    lastUpdated: formatDate(eventRaised, moment.ISO_8601)
   }
 }
 
@@ -79,6 +80,13 @@ const buildMiReport = (events) => {
   }
 
   return convertToCSV(miParsedData)
+}
+
+const formatDate = (dateToFormat, currentDateFormat = 'DD/MM/YYYY') => {
+  if (dateToFormat) {
+    return moment(dateToFormat, currentDateFormat).format('DD/MM/YYYY')
+  }
+  return 'Unknown'
 }
 
 module.exports = buildMiReport
