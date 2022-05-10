@@ -43,7 +43,7 @@ describe('report', () => {
     mockEvents = [{
       partitionKey: 'partition',
       EventType: 'batch-processing',
-      Payload: '{"type":"info","message":"Payment request created from batch file","data":{"filename":"SITIELM0003_AP_20220412114822998.dat","sequence":"0003","paymentRequest":{"sourceSystem":"SFIP","deliveryBody":"RP00","invoiceNumber":"SFI00036146","frn":"3000006147","marketingYear":"2022","paymentRequestNumber":1,"agreementNumber":"SIP003000006147","contractNumber":"SFIP036146","currency":"GBP","schedule":"Q4","dueDate":"2022-12-01","value":100,"correlationId":"000026c9-fb51-491b-9272-1ef6ccd68f15","invoiceLines":[{"schemeCode":"80001","accountCode":"SOS273","fundCode":"DRD10","description":"G00 - Gross value of claim","value":100}]}},"timestamp":"2022-04-14T10:34:46.241Z"}'
+      Payload: '{"type":"info","message":"Payment request created from batch file","data":{"filename":"SITIELM0003_AP_20220412114822998.dat","sequence":"0003", "batchExportDate": "01/01/2022","paymentRequest":{"sourceSystem":"SFIP","deliveryBody":"RP00","invoiceNumber":"SFI00036146","frn":"3000006147","marketingYear":"2022","paymentRequestNumber":1,"agreementNumber":"SIP003000006147","contractNumber":"SFIP036146","currency":"GBP","schedule":"Q4","dueDate":"2022-12-01","value":100,"correlationId":"000026c9-fb51-491b-9272-1ef6ccd68f15","invoiceLines":[{"schemeCode":"80001","accountCode":"SOS273","fundCode":"DRD10","description":"G00 - Gross value of claim","value":100}]}},"timestamp":"2022-04-14T10:34:46.241Z"}'
     }, {
       partitionKey: 'partition',
       EventType: 'payment-request-enrichment',
