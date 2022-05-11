@@ -1,3 +1,4 @@
+const moment = require('moment')
 const BATCH_PROCESSED_EVENT_TYPE = 'batch-processing'
 const PAYMENT_REQUEST_ENRICHMENT_EVENT_TYPE = 'payment-request-enrichment'
 
@@ -21,7 +22,12 @@ const getFirstEvent = (data) => {
   const eventData = getEvent(data, BATCH_PROCESSED_EVENT_TYPE) ?? getEvent(data, PAYMENT_REQUEST_ENRICHMENT_EVENT_TYPE)
   const event = eventData ? JSON.parse(eventData.Payload) : {}
   const paymentData = event.data?.paymentRequest
-  return { id: eventData?.partitionKey, sequence: event.data?.sequence, paymentData }
+  return {
+    id: eventData?.partitionKey,
+    sequence: event.data?.sequence,
+    batchExportDate: event.data?.batchExportDate,
+    paymentData
+  }
 }
 
 const getEvent = (data, eventType) => {
@@ -35,7 +41,7 @@ const getLatestEvent = (data) => {
 }
 
 const parseEventData = (eventData) => {
-  const { id, sequence, paymentData } = getFirstEvent(eventData)
+  const { id, sequence, paymentData, batchExportDate } = getFirstEvent(eventData)
 
   if (!paymentData) {
     return {}
@@ -55,8 +61,9 @@ const parseEventData = (eventData) => {
     totalAmount: paymentData.value,
     batchId: sequence,
     batchCreatorId: paymentData.sourceSystem,
+    batchExportDate: formatDate(batchExportDate),
     status: status,
-    lastUpdated: eventRaised
+    lastUpdated: formatDate(eventRaised, moment.ISO_8601)
   }
 }
 
@@ -73,6 +80,13 @@ const buildMiReport = (events) => {
   }
 
   return convertToCSV(miParsedData)
+}
+
+const formatDate = (dateToFormat, currentDateFormat = 'YYYY-MM-DD') => {
+  if (dateToFormat) {
+    return moment(dateToFormat, currentDateFormat).format('DD/MM/YYYY')
+  }
+  return 'Unknown'
 }
 
 module.exports = buildMiReport
