@@ -1,12 +1,13 @@
 {
   "name": "ffc-pay-mi-reporting",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Azure Function to create MI reports",
   "author": "Defra",
   "contributors": [
     "Steve Dickinson <steve.dickinson@defra.gov.uk>",
     "John Watson <john.watson2@rpa.gov.uk>",
-    "Marc Templeton <m.templeton@kainos.com>"
+    "Marc Templeton <m.templeton@kainos.com>",
+    "Simon Dunn <simon.dunn1@defra.gov.uk>"
   ],
   "scripts": {
     "lint": "standard",
@@ -14,7 +15,8 @@
     "start:detached": "func start -p 7085 1> /dev/null 2> /dev/null &",
     "start:verbose": "func start -p 7085 --verbose",
     "test": "jest",
-    "test:watch": "jest --coverage=false --onlyChanged --watch"
+    "test:watch": "jest --coverage=false --onlyChanged --watch",
+    "pretest": "npm run lint"
   },
   "dependencies": {
     "@azure/data-tables": "^13.0.1",
