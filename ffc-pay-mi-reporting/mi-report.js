@@ -78,8 +78,9 @@ const buildMiReport = (events) => {
       miParsedData.push(parseData)
     }
   }
-
-  return convertToCSV(miParsedData)
+  if (miParsedData.length > 0) {
+    return convertToCSV(miParsedData)
+  }
 }
 
 const formatDate = (dateToFormat, currentDateFormat = 'YYYY-MM-DD') => {
