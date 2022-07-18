@@ -62,7 +62,7 @@ const parseEventData = (eventData) => {
     batchId: sequence,
     batchCreatorId: paymentData.sourceSystem,
     batchExportDate: formatDate(batchExportDate),
-    status: status,
+    status,
     lastUpdated: formatDate(eventRaised, moment.ISO_8601)
   }
 }
