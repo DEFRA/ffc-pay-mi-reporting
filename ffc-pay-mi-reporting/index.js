@@ -10,8 +10,12 @@ module.exports = async (context, miReportTimer) => {
   if (events.length) {
     context.log('Report creation started')
     const csvData = buildMiReport(events)
-    await writeFile(reportName, csvData)
-    context.log('Report created')
+    if (csvData) {
+      await writeFile(reportName, csvData)
+      context.log('Report created')
+    } else {
+      context.log('No data to report')
+    }
   }
 
   if (miReportTimer.isPastDue) {

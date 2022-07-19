@@ -62,7 +62,7 @@ const parseEventData = (eventData) => {
     batchId: sequence,
     batchCreatorId: paymentData.sourceSystem,
     batchExportDate: formatDate(batchExportDate),
-    status: status,
+    status,
     lastUpdated: formatDate(eventRaised, moment.ISO_8601)
   }
 }
@@ -78,8 +78,9 @@ const buildMiReport = (events) => {
       miParsedData.push(parseData)
     }
   }
-
-  return convertToCSV(miParsedData)
+  if (miParsedData.length > 0) {
+    return convertToCSV(miParsedData)
+  }
 }
 
 const formatDate = (dateToFormat, currentDateFormat = 'YYYY-MM-DD') => {
